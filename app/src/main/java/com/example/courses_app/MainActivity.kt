@@ -1,9 +1,12 @@
 package com.example.courses_app
 
+import android.app.FragmentManager.BackStackEntry
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +40,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.courses_app.ui.theme.Courses_AppTheme
 
 class MainActivity : ComponentActivity() {
@@ -45,11 +53,45 @@ class MainActivity : ComponentActivity() {
         setContent {
             Courses_AppTheme {
                 // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
                 ) {
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = "home") {
 
+                        composable("home") {
+                            HomeScreeen(onDetailsClick = { title ->
+                                navController.navigate("details/title=$title")
+                            }, onAboutClick = { navController.navigate("about") })
+
+                        }
+
+                        composable("about") {
+                            AboutScreen(onNavigateUp = { navController.popBackStack() })
+
+
+                        }
+
+                        composable(
+                            "details/title={title}",
+                            arguments = listOf(navArgument("title") {
+                                type = NavType.StringType
+                                nullable = true
+                            })
+                        ) { backStackEntry ->
+                            val arguments = requireNotNull(backStackEntry.arguments)
+                            val title = arguments.getString("title")
+                            if (title != null) {
+                                DetailsScreen(
+                                    title = title,
+                                    onNavigateUp = { navController.popBackStack() })
+                            }
+
+
+                        }
+                    }
                 }
             }
         }
@@ -161,7 +203,7 @@ fun AppBar(title: String, onNavigateUp: () -> Unit) {
 }
 
 @Composable
-fun DetailsScreen(title: String, name: String?, onNavigateUp: () -> Unit) {
+fun DetailsScreen(title: String, onNavigateUp: () -> Unit) {
     val chosenCourse = allCourses.first { it.title == title }
     Scaffold { padding ->
         Column(modifier = Modifier.padding(padding)) {
