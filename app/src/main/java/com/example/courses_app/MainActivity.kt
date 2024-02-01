@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Button
@@ -69,7 +70,7 @@ fun HomeScreeen(
                 Spacer(modifier = Modifier.height(30.dp))
             }
             items(allCourses) { item ->
-                CourseCard(item, onDetailsClick(item.title))
+                CourseCard(item, onClick = { onDetailsClick(item.title) })
             }
         }
     }
@@ -156,6 +157,43 @@ fun AppBar(title: String, onNavigateUp: () -> Unit) {
         Spacer(modifier = Modifier.width(10.dp))
         Text(text = title, fontSize = 24.sp)
 
+    }
+}
+
+@Composable
+fun DetailsScreen(title: String, name: String?, onNavigateUp: () -> Unit) {
+    val chosenCourse = allCourses.first { it.title == title }
+    Scaffold { padding ->
+        Column(modifier = Modifier.padding(padding)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(vertical = 10.dp)
+            ) {
+                IconButton(onClick = onNavigateUp) {
+                    Icon(Icons.Rounded.ArrowBack, contentDescription = "Go Back")
+                }
+            }
+            Image(
+                painterResource(id = chosenCourse.thumbnail),
+                contentDescription = "course thumbnail",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(16f / 9f),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.height(15.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Text(text = chosenCourse.title, fontSize = 40.sp)
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(text = chosenCourse.body, modifier = Modifier.fillMaxSize(), fontSize = 20.sp)
+
+            }
+
+        }
     }
 }
 
