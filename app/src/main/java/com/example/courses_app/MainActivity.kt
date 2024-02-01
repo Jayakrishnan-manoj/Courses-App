@@ -14,8 +14,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -25,6 +30,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -111,6 +118,44 @@ fun CourseCard(item: Courses, onClick: () -> Unit) {
                 Text(item.body, maxLines = 1, style = MaterialTheme.typography.bodySmall)
             }
         }
+    }
+}
+
+@Composable
+fun AboutScreen(onNavigateUp: () -> Unit) {
+    Scaffold { padding ->
+        Column(modifier = Modifier.padding(padding)) {
+            AppBar(title = "About", onNavigateUp)
+            Spacer(modifier = Modifier.height(20.dp))
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "This app is a demonstration of Navigation in android jetpack compose",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                val github_link = LocalUriHandler.current
+                Button(onClick = { github_link.openUri("https://github.com/Jayakrishnan-manoj") }) {
+                    Text(text = "My GitHub Profile")
+                }
+
+            }
+
+        }
+    }
+}
+
+@Composable
+fun AppBar(title: String, onNavigateUp: () -> Unit) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(vertical = 10.dp)
+    ) {
+        IconButton(onClick = onNavigateUp) {
+            Icon(Icons.Rounded.ArrowBack, contentDescription = "Go Back")
+        }
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(text = title, fontSize = 24.sp)
+
     }
 }
 
